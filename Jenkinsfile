@@ -17,6 +17,10 @@ pipeline {
                 sh 'node server.js &'
             }
         }
+        stage('Run Selenium Tests') {
+            steps {
+                sh 'python3 selenium_tests.py'
+            }
+        }
     }
-    
 }
