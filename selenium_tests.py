@@ -6,13 +6,13 @@ driver = webdriver.Chrome()
 
 # Test Case 1: Open Homepage
 def test_homepage():
-    driver.get("http://localhost:3000") 
+    driver.get("http://3.81.225.108/:3000") 
     assert "Welcome to Assignment 03" in driver.title, "Homepage title does not contain 'Welcome to Assignment 03'"
     print("Test Case 1 Passed: Homepage loaded successfully.")
 
 # Test Case 2: Form Submission
 def test_form_submission():
-    driver.get("http://localhost:3000")
+    driver.get("http://3.81.225.108:3000")
     name_field = driver.find_element(By.ID, "name")
     name_field.send_keys("Test User")
     driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
