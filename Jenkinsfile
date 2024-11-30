@@ -1,26 +1,64 @@
 pipeline {
     agent any
 
+    environment {
+        NODE_HOME = '/usr/bin'
+        SELENIUM_VENV = '.venv'
+    }
+
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/awais-ur-rehman/jenkins_integration'
+                git 'https://github.com/<your-username>/jenkins_integration.git'
             }
         }
-        stage('Install Dependencies') {
+
+        stage('Install Node.js Dependencies') {
             steps {
-                sh 'npm install'
+                script {
+                    sh 'npm install'
+                }
             }
         }
-        stage('Run Server') {
+
+        stage('Start Node.js Server') {
             steps {
-                sh 'node server.js &'
+                script {
+                    sh 'nohup npm start &'
+                }
             }
         }
+
+        stage('Set Up Python Virtual Environment') {
+            steps {
+                script {
+                    sh 'python3 -m venv ${SELENIUM_VENV}'
+                    sh 'source ${SELENIUM_VENV}/bin/activate && pip install selenium'
+                }
+            }
+        }
+
         stage('Run Selenium Tests') {
             steps {
-                sh 'python3 selenium_tests.py'
+                script {
+                    sh 'source ${SELENIUM_VENV}/bin/activate && python selenium_tests.py'
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            script {
+                sh 'pkill -f node || true'
+            }
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
